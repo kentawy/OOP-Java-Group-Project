@@ -71,47 +71,36 @@ GUI-додаток для роботи з таблицею в СУБД (JavaFX +
 --- 
 ### 📝 Приклади за типами комітів
 
-#### 🚀 feat (Новий функціонал)
-Використовуйте, коли додаєте новий клас, метод або елемент інтерфейсу.
+#### 🚀 feat (New feature)
+- `feat: add DBConnection class for PostgreSQL connection`
+- `feat: implement method to add new student in StudentDAO`
+- `feat: develop FXML interface for contract registration form`
+- `feat: add room search function by number and capacity`
 
-- `feat: додано клас DBConnection для підключення до PostgreSQL`
-- `feat: реалізовано метод додавання нового студента в StudentDAO`
-- `feat: розроблено FXML-інтерфейс для форми реєстрації контрактів`
-- `feat: додано функцію пошуку кімнат за номером та місткістю`
+#### 🐛 fix (Bug fix)
+- `fix: fix date display error in contracts table`
+- `fix: fix syntax error in deleteStudent SQL query`
+- `fix: add NullPointerException handling for empty value search`
+- `fix: fix SQL numeric types display in JavaFX TableView`
 
-#### 🐛 fix (Виправлення помилок)
-Використовуйте, коли щось не працювало і ви це виправили.
+#### 📚 docs (Documentation)
+- `docs: update database schema in README.md`
+- `docs: add JavaDoc for service layer methods`
+- `docs: prepare conference abstracts (data types section)`
+- `docs: add instructions for db.properties configuration`
 
-- `fix: виправлено помилку відображення дати в таблиці контрактів`
-- `fix: виправлено SQL-запит у методі deleteStudent (помилка синтаксису)`
-- `fix: додано обробку NullPointerException при пошуку порожніх значень`
-- `fix: виправлено відображення числових типів SQL у JavaFX TableView`
+#### 🛠 refactor (Refactoring)
+- `refactor: move SQL queries from controller to separate DAO class`
+- `refactor: optimize SQL Date to LocalDate conversion method`
+- `refactor: rename variables in Student model for better readability`
 
-#### 📚 docs (Документація)
-Використовуйте для змін у README, додавання коментарів або JavaDoc.
+#### 🎨 style (Code style)
+- `style: format code according to Google Java Style Guide`
+- `style: update CSS styles for the main application table`
 
-- `docs: оновлено схему бази даних у README.md`
-- `docs: додано JavaDoc для методів сервісного шару`
-- `docs: підготовлено тези для конференції (розділ про типи даних)`
-- `docs: додано інструкцію з налаштування файлу db.properties`
-
-#### 🛠 refactor (Рефакторинг)
-Використовуйте, коли ви змінюєте структуру коду, не додаючи нових функцій (наприклад, переносите логіку).
-
-- `refactor: винесено SQL-запити з контролера в окремий DAO клас`
-- `refactor: оптимізовано метод перетворення SQL Date у LocalDate`
-- `refactor: перейменовано змінні в моделі Student для кращої читаємості`
-
-#### 🎨 style (Стиль коду)
-Використовуйте для змін, що не впливають на логіку (пробіли, форматування, відступи).
-
-- `style: відформатовано код відповідно до Google Java Style Guide`
-- `style: оновлено CSS-стилі для головної таблиці застосунку`
-
-#### 🧪 test (Тестування)
-
-- `test: додано JUnit тести для валідації полів факультету`
-- `test: перевірка коректності мапінгу типів SQL -> Java`
+#### 🧪 test (Testing)
+- `test: add JUnit tests for faculty field validation`
+- `test: verify SQL to Java type mapping correctness`
 
 --- 
 
