@@ -23,6 +23,15 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * The main controller for the application's user interface.
+ * This class manages all UI components, handles user events, and coordinates
+ * data operations by interacting with the various DAO classes.
+ * It is responsible for the logic of all tabs: Students, Faculties, Rooms, and Contracts.
+ *
+ * @author Bohdan Dmytrenko, Bohdan Ruban, Olha Sribna
+ * @version 1.0
+ */
 public class HelloController {
 
     //<editor-fold desc="DAOs">
@@ -33,9 +42,13 @@ public class HelloController {
     //</editor-fold>
 
     //<editor-fold desc="Master Lists">
+    /** Master list of all students, used as a source for tables and filters. */
     private ObservableList<Student> masterStudentList;
+    /** Master list of all faculties. */
     private ObservableList<Faculty> masterFacultyList;
+    /** Master list of all rooms. */
     private ObservableList<Room> masterRoomList;
+    /** Master list of all contracts. */
     private ObservableList<Contract> masterContractList;
     //</editor-fold>
 
@@ -102,6 +115,11 @@ public class HelloController {
     private String darkThemeUrl;
     private String lightThemeUrl;
 
+    /**
+     * Initializes the controller class. This method is automatically called
+     * after the FXML file has been loaded. It sets up all the tabs with their
+     * respective data and configurations.
+     */
     @FXML
     public void initialize() {
         setupHomeTab();
@@ -112,13 +130,20 @@ public class HelloController {
     }
 
     //<editor-fold desc="Navigation Methods">
+    /** Navigates to the Students tab. */
     @FXML private void goToStudentsTab() { mainTabPane.getSelectionModel().select(studentsTab); }
+    /** Navigates to the Faculties tab. */
     @FXML private void goToFacultiesTab() { mainTabPane.getSelectionModel().select(facultiesTab); }
+    /** Navigates to the Rooms tab. */
     @FXML private void goToRoomsTab() { mainTabPane.getSelectionModel().select(roomsTab); }
+    /** Navigates to the Contracts tab. */
     @FXML private void goToContractsTab() { mainTabPane.getSelectionModel().select(contractsTab); }
     //</editor-fold>
 
     //<editor-fold desc="Setup Methods">
+    /**
+     * Sets up the Home tab with theme and language selection functionality.
+     */
     private void setupHomeTab() {
         darkThemeUrl = getClass().getResource("styles.css").toExternalForm();
         lightThemeUrl = getClass().getResource("light-theme.css").toExternalForm();
@@ -155,6 +180,9 @@ public class HelloController {
         });
     }
 
+    /**
+     * Sets up the Students tab, including table columns, combo boxes, and event listeners.
+     */
     private void setupStudentTab() {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         fullNameColumn.setCellValueFactory(new PropertyValueFactory<>("fullName"));
@@ -168,6 +196,9 @@ public class HelloController {
         });
     }
 
+    /**
+     * Sets up the Faculties tab, including table columns and event listeners.
+     */
     private void setupFacultyTab() {
         facultyIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         facultyNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -177,6 +208,9 @@ public class HelloController {
         });
     }
 
+    /**
+     * Sets up the Rooms tab, including table columns and event listeners.
+     */
     private void setupRoomTab() {
         roomIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         roomNumberColumn.setCellValueFactory(new PropertyValueFactory<>("roomNumber"));
@@ -188,6 +222,9 @@ public class HelloController {
         });
     }
 
+    /**
+     * Sets up the Contracts tab, including table columns, combo boxes, and event listeners.
+     */
     private void setupContractTab() {
         contractIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         contractStudentColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStudent().getFullName()));
@@ -204,12 +241,18 @@ public class HelloController {
     //</editor-fold>
 
     //<editor-fold desc="Load Data Methods">
+    /**
+     * Loads or reloads student data from the database and populates the student table and combo boxes.
+     */
     private void loadStudentData() {
         masterStudentList = FXCollections.observableArrayList(studentDao.getAllStudents());
         studentTable.setItems(masterStudentList);
         contractStudentComboBox.setItems(masterStudentList);
     }
 
+    /**
+     * Loads or reloads faculty data from the database and populates the faculty table and combo boxes.
+     */
     private void loadFacultyData() {
         masterFacultyList = FXCollections.observableArrayList(facultyDao.getAllFaculties());
         facultyTableView.setItems(masterFacultyList);
@@ -220,12 +263,18 @@ public class HelloController {
         searchFacultyComboBox.setItems(searchFaculties);
     }
 
+    /**
+     * Loads or reloads room data from the database and populates the room table and combo boxes.
+     */
     private void loadRoomData() {
         masterRoomList = FXCollections.observableArrayList(roomDao.getAllRooms());
         roomTableView.setItems(masterRoomList);
         contractRoomComboBox.setItems(masterRoomList);
     }
 
+    /**
+     * Loads or reloads contract data from the database and populates the contract table.
+     */
     private void loadContractData() {
         masterContractList = FXCollections.observableArrayList(contractDao.getAllContracts());
         contractTableView.setItems(masterContractList);
@@ -233,6 +282,9 @@ public class HelloController {
     //</editor-fold>
 
     //<editor-fold desc="Student Logic">
+    /**
+     * Filters the student table based on the text in the search field and the selected faculty.
+     */
     @FXML private void searchStudents() {
         String searchName = searchNameField.getText().toLowerCase();
         Faculty searchFaculty = searchFacultyComboBox.getValue();
@@ -244,11 +296,19 @@ public class HelloController {
         });
         studentTable.setItems(filteredData);
     }
+
+    /**
+     * Clears the student search filters and restores the full student list.
+     */
     @FXML private void clearSearch() {
         searchNameField.clear();
         searchFacultyComboBox.getSelectionModel().clearSelection();
         studentTable.setItems(masterStudentList);
     }
+
+    /**
+     * Handles the "Add Student" button action. Validates input and adds a new student to the database.
+     */
     @FXML private void addStudent() {
         if (!validateStudentInput()) return;
         Student newStudent = new Student(fullNameField.getText(), genderComboBox.getValue(), phoneField.getText(), facultyComboBox.getValue());
@@ -256,6 +316,10 @@ public class HelloController {
         loadStudentData();
         clearInputFields();
     }
+
+    /**
+     * Handles the "Update Student" button action. Validates input and updates the selected student's data.
+     */
     @FXML private void updateStudent() {
         Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
         if (selectedStudent == null) { showAlert(Alert.AlertType.WARNING, resources.getString("alert.warning.title"), resources.getString("alert.student.not_selected_update")); return; }
@@ -269,6 +333,11 @@ public class HelloController {
         loadStudentData();
         studentTable.getSelectionModel().select(selectedIndex);
     }
+
+    /**
+     * Handles the "Delete Student" button action. Confirms with the user before deleting the selected student.
+     * Prevents deletion if the student is part of an active contract.
+     */
     @FXML private void deleteStudent() {
         Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
         if (selectedStudent == null) { showAlert(Alert.AlertType.WARNING, resources.getString("alert.warning.title"), resources.getString("alert.student.not_selected_delete")); return; }
@@ -286,6 +355,11 @@ public class HelloController {
             clearInputFields();
         }
     }
+
+    /**
+     * Validates the input fields for adding or updating a student.
+     * @return true if the input is valid, false otherwise.
+     */
     private boolean validateStudentInput() {
         if (fullNameField.getText() == null || fullNameField.getText().trim().isEmpty()) { showAlert(Alert.AlertType.ERROR, resources.getString("alert.error.title"), resources.getString("alert.name.empty")); return false; }
         if (genderComboBox.getValue() == null) { showAlert(Alert.AlertType.ERROR, resources.getString("alert.error.title"), resources.getString("alert.gender.empty")); return false; }
@@ -294,12 +368,21 @@ public class HelloController {
         if (phone != null && !phone.trim().isEmpty() && !phone.matches("[\\d+()-]*")) { showAlert(Alert.AlertType.ERROR, resources.getString("alert.error.title"), resources.getString("alert.phone.invalid")); return false; }
         return true;
     }
+
+    /**
+     * Populates the input fields with the details of the selected student.
+     * @param student The student whose details are to be displayed.
+     */
     private void populateStudentDetails(Student student) {
         fullNameField.setText(student.getFullName());
         genderComboBox.setValue(student.getGender());
         phoneField.setText(student.getPhone());
         facultyComboBox.getItems().stream().filter(f -> f.getId() == student.getFacultyId()).findFirst().ifPresent(facultyComboBox::setValue);
     }
+
+    /**
+     * Clears all input fields in the student form.
+     */
     @FXML private void clearInputFields() {
         fullNameField.clear();
         genderComboBox.getSelectionModel().clearSelection();
@@ -310,6 +393,9 @@ public class HelloController {
     //</editor-fold>
 
     //<editor-fold desc="Faculty Logic">
+    /**
+     * Handles the "Add Faculty" button action. Adds a new faculty to the database.
+     */
     @FXML private void addFaculty() {
         String name = facultyNameField.getText();
         if (name == null || name.trim().isEmpty()) { showAlert(Alert.AlertType.ERROR, resources.getString("alert.error.title"), resources.getString("alert.faculty.name.empty")); return; }
@@ -317,6 +403,10 @@ public class HelloController {
         loadFacultyData();
         facultyNameField.clear();
     }
+
+    /**
+     * Handles the "Update Faculty" button action. Updates the selected faculty's name.
+     */
     @FXML private void updateFaculty() {
         Faculty selectedFaculty = facultyTableView.getSelectionModel().getSelectedItem();
         if (selectedFaculty == null) { showAlert(Alert.AlertType.WARNING, resources.getString("alert.warning.title"), resources.getString("alert.faculty.not_selected_update")); return; }
@@ -326,6 +416,10 @@ public class HelloController {
         facultyDao.updateFaculty(selectedFaculty);
         loadFacultyData();
     }
+
+    /**
+     * Handles the "Delete Faculty" button action. Prevents deletion if the faculty is in use by students.
+     */
     @FXML private void deleteFaculty() {
         Faculty selectedFaculty = facultyTableView.getSelectionModel().getSelectedItem();
         if (selectedFaculty == null) { showAlert(Alert.AlertType.WARNING, resources.getString("alert.warning.title"), resources.getString("alert.faculty.not_selected_delete")); return; }
@@ -341,6 +435,10 @@ public class HelloController {
             loadFacultyData();
         }
     }
+
+    /**
+     * Clears the faculty name input field.
+     */
     @FXML private void clearFacultyField() {
         facultyNameField.clear();
         facultyTableView.getSelectionModel().clearSelection();
@@ -348,6 +446,9 @@ public class HelloController {
     //</editor-fold>
 
     //<editor-fold desc="Room Logic">
+    /**
+     * Handles the "Add Room" button action. Adds a new room to the database.
+     */
     @FXML private void addRoom() {
         if (!validateRoomInput()) return;
         Room newRoom = new Room(0, roomNumberField.getText(), Integer.parseInt(roomCapacityField.getText()), new BigDecimal(roomPriceField.getText()));
@@ -355,6 +456,10 @@ public class HelloController {
         loadRoomData();
         clearRoomFields();
     }
+
+    /**
+     * Handles the "Update Room" button action. Updates the selected room's details.
+     */
     @FXML private void updateRoom() {
         Room selectedRoom = roomTableView.getSelectionModel().getSelectedItem();
         if (selectedRoom == null) { showAlert(Alert.AlertType.WARNING, resources.getString("alert.warning.title"), resources.getString("alert.room.not_selected_update")); return; }
@@ -365,6 +470,10 @@ public class HelloController {
         roomDao.updateRoom(selectedRoom);
         loadRoomData();
     }
+
+    /**
+     * Handles the "Delete Room" button action. Prevents deletion if the room is part of an active contract.
+     */
     @FXML private void deleteRoom() {
         Room selectedRoom = roomTableView.getSelectionModel().getSelectedItem();
         if (selectedRoom == null) { showAlert(Alert.AlertType.WARNING, resources.getString("alert.warning.title"), resources.getString("alert.room.not_selected_delete")); return; }
@@ -380,12 +489,21 @@ public class HelloController {
             loadRoomData();
         }
     }
+
+    /**
+     * Clears all input fields in the room form.
+     */
     @FXML private void clearRoomFields() {
         roomNumberField.clear();
         roomCapacityField.clear();
         roomPriceField.clear();
         roomTableView.getSelectionModel().clearSelection();
     }
+
+    /**
+     * Validates the input fields for adding or updating a room.
+     * @return true if the input is valid, false otherwise.
+     */
     private boolean validateRoomInput() {
         String number = roomNumberField.getText();
         String capacity = roomCapacityField.getText();
@@ -401,6 +519,11 @@ public class HelloController {
         } catch (NumberFormatException e) { showAlert(Alert.AlertType.ERROR, resources.getString("alert.error.title"), resources.getString("alert.price.invalid")); return false; }
         return true;
     }
+
+    /**
+     * Populates the input fields with the details of the selected room.
+     * @param room The room whose details are to be displayed.
+     */
     private void populateRoomDetails(Room room) {
         roomNumberField.setText(room.getRoomNumber());
         roomCapacityField.setText(String.valueOf(room.getCapacity()));
@@ -409,6 +532,9 @@ public class HelloController {
     //</editor-fold>
 
     //<editor-fold desc="Contract Logic">
+    /**
+     * Handles the "Add Contract" button action. Adds a new contract to the database.
+     */
     @FXML private void addContract() {
         if (!validateContractInput()) return;
         Contract newContract = new Contract(contractStudentComboBox.getValue(), contractRoomComboBox.getValue(), contractStartDatePicker.getValue(), contractEndDatePicker.getValue(), contractStatusComboBox.getValue());
@@ -416,6 +542,10 @@ public class HelloController {
         loadContractData();
         clearContractFields();
     }
+
+    /**
+     * Handles the "Update Contract" button action. Updates the selected contract's details.
+     */
     @FXML private void updateContract() {
         Contract selectedContract = contractTableView.getSelectionModel().getSelectedItem();
         if (selectedContract == null) { showAlert(Alert.AlertType.WARNING, resources.getString("alert.warning.title"), resources.getString("alert.contract.not_selected_update")); return; }
@@ -428,6 +558,10 @@ public class HelloController {
         contractDao.updateContract(selectedContract);
         loadContractData();
     }
+
+    /**
+     * Handles the "Delete Contract" button action. Confirms with the user before deleting.
+     */
     @FXML private void deleteContract() {
         Contract selectedContract = contractTableView.getSelectionModel().getSelectedItem();
         if (selectedContract == null) { showAlert(Alert.AlertType.WARNING, resources.getString("alert.warning.title"), resources.getString("alert.contract.not_selected_delete")); return; }
@@ -441,6 +575,10 @@ public class HelloController {
             loadContractData();
         }
     }
+
+    /**
+     * Clears all input fields in the contract form.
+     */
     @FXML private void clearContractFields() {
         contractStudentComboBox.getSelectionModel().clearSelection();
         contractRoomComboBox.getSelectionModel().clearSelection();
@@ -449,6 +587,11 @@ public class HelloController {
         contractStatusComboBox.getSelectionModel().clearSelection();
         contractTableView.getSelectionModel().clearSelection();
     }
+
+    /**
+     * Validates the input fields for adding or updating a contract.
+     * @return true if the input is valid, false otherwise.
+     */
     private boolean validateContractInput() {
         if (contractStudentComboBox.getValue() == null) { showAlert(Alert.AlertType.ERROR, resources.getString("alert.error.title"), resources.getString("alert.student.not_selected")); return false; }
         if (contractRoomComboBox.getValue() == null) { showAlert(Alert.AlertType.ERROR, resources.getString("alert.error.title"), resources.getString("alert.room.not_selected")); return false; }
@@ -458,6 +601,11 @@ public class HelloController {
         if (contractStatusComboBox.getValue() == null) { showAlert(Alert.AlertType.ERROR, resources.getString("alert.error.title"), resources.getString("alert.status.empty")); return false; }
         return true;
     }
+
+    /**
+     * Populates the input fields with the details of the selected contract.
+     * @param contract The contract whose details are to be displayed.
+     */
     private void populateContractDetails(Contract contract) {
         contractStudentComboBox.getItems().stream().filter(s -> s.getId() == contract.getStudentId()).findFirst().ifPresent(contractStudentComboBox::setValue);
         contractRoomComboBox.getItems().stream().filter(r -> r.getId() == contract.getRoomId()).findFirst().ifPresent(contractRoomComboBox::setValue);
@@ -467,6 +615,12 @@ public class HelloController {
     }
     //</editor-fold>
 
+    /**
+     * A utility method to show an alert dialog to the user.
+     * @param type    The type of alert (e.g., ERROR, WARNING, CONFIRMATION).
+     * @param title   The title of the alert window.
+     * @param message The message to display in the alert.
+     */
     private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);

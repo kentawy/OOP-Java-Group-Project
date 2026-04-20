@@ -10,10 +10,24 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object (DAO) for handling CRUD operations for the {@link Contract} entity.
+ * This class provides methods to interact with the 'Contract' table in the database,
+ * performing necessary joins to populate related entities like Student, Room, and Faculty.
+ *
+ * @author Bohdan Dmytrenko, Bohdan Ruban, Olha Sribna
+ * @version 1.0
+ */
 public class ContractDao {
 
     private final DatabaseHandler dbHandler = new DatabaseHandler();
 
+    /**
+     * Retrieves all contracts from the database.
+     * It performs JOINs with Student, Room, and Faculty tables to build complete Contract objects.
+     *
+     * @return A list of all {@link Contract} objects. Returns an empty list if an error occurs.
+     */
     public List<Contract> getAllContracts() {
         List<Contract> contracts = new ArrayList<>();
         String query = "SELECT c.id, c.start_date, c.end_date, c.status, " +
@@ -48,6 +62,11 @@ public class ContractDao {
         return contracts;
     }
 
+    /**
+     * Adds a new contract to the database.
+     *
+     * @param contract The {@link Contract} object to add. The contract's ID is ignored.
+     */
     public void addContract(Contract contract) {
         String query = "INSERT INTO Contract (student_id, room_id, start_date, end_date, status) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = dbHandler.getDbConnection();
@@ -63,6 +82,11 @@ public class ContractDao {
         }
     }
 
+    /**
+     * Updates an existing contract in the database.
+     *
+     * @param contract The {@link Contract} object with updated information. The contract is identified by its ID.
+     */
     public void updateContract(Contract contract) {
         String query = "UPDATE Contract SET student_id = ?, room_id = ?, start_date = ?, end_date = ?, status = ? WHERE id = ?";
         try (Connection connection = dbHandler.getDbConnection();
@@ -79,6 +103,11 @@ public class ContractDao {
         }
     }
 
+    /**
+     * Deletes a contract from the database by its ID.
+     *
+     * @param id The ID of the contract to delete.
+     */
     public void deleteContract(int id) {
         String query = "DELETE FROM Contract WHERE id = ?";
         try (Connection connection = dbHandler.getDbConnection();
