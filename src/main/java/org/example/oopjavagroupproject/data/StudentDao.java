@@ -11,13 +11,25 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object (DAO) for handling CRUD operations for the {@link Student} entity.
+ * This class provides methods to interact with the 'Student' table in the database.
+ *
+ * @author Bohdan Dmytrenko, Bohdan Ruban, Olha Sribna
+ * @version 1.0
+ */
 public class StudentDao {
 
     private final DatabaseHandler dbHandler = new DatabaseHandler();
 
+    /**
+     * Retrieves all students from the database.
+     * It performs a JOIN with the Faculty table to populate the student's faculty information.
+     *
+     * @return A list of all {@link Student} objects. Returns an empty list if an error occurs.
+     */
     public List<Student> getAllStudents() {
         List<Student> students = new ArrayList<>();
-        // The query now joins with the Faculty table
         String query = "SELECT s.id, s.full_name, s.gender, s.phone, s.faculty_id, f.name AS faculty_name " +
                        "FROM Student s " +
                        "LEFT JOIN Faculty f ON s.faculty_id = f.id";
@@ -46,6 +58,11 @@ public class StudentDao {
         return students;
     }
 
+    /**
+     * Adds a new student to the database.
+     *
+     * @param student The {@link Student} object to add. The student's ID is ignored.
+     */
     public void addStudent(Student student) {
         String query = "INSERT INTO Student (full_name, gender, phone, faculty_id) VALUES (?, ?, ?, ?)";
 
@@ -55,7 +72,7 @@ public class StudentDao {
             preparedStatement.setString(1, student.getFullName());
             preparedStatement.setString(2, student.getGender());
             preparedStatement.setString(3, student.getPhone());
-            preparedStatement.setInt(4, student.getFacultyId()); // Use the helper method
+            preparedStatement.setInt(4, student.getFacultyId());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -63,6 +80,11 @@ public class StudentDao {
         }
     }
 
+    /**
+     * Updates an existing student in the database.
+     *
+     * @param student The {@link Student} object with updated information. The student is identified by their ID.
+     */
     public void updateStudent(Student student) {
         String query = "UPDATE Student SET full_name = ?, gender = ?, phone = ?, faculty_id = ? WHERE id = ?";
 
@@ -72,7 +94,7 @@ public class StudentDao {
             preparedStatement.setString(1, student.getFullName());
             preparedStatement.setString(2, student.getGender());
             preparedStatement.setString(3, student.getPhone());
-            preparedStatement.setInt(4, student.getFacultyId()); // Use the helper method
+            preparedStatement.setInt(4, student.getFacultyId());
             preparedStatement.setInt(5, student.getId());
 
             preparedStatement.executeUpdate();
@@ -81,6 +103,11 @@ public class StudentDao {
         }
     }
 
+    /**
+     * Deletes a student from the database by their ID.
+     *
+     * @param id The ID of the student to delete.
+     */
     public void deleteStudent(int id) {
         String query = "DELETE FROM Student WHERE id = ?";
 
